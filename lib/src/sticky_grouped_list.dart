@@ -137,6 +137,17 @@ class StickyGroupedListView<T, E> extends StatefulWidget {
   /// should be placed.
   final double initialAlignment;
 
+  /// Determine how much from the header widget should be visible
+  /// before the sticky header will change to the new one
+  ///
+  /// Default to 1.
+  final double headerVisibleAtTrigger;
+
+  /// Wheter to hide the groupSeparatorBuilder when the groupHeader is visible
+  ///
+  /// Default to false.
+  final bool hideGroupSeparatorHeaderForCurrentVisibleGroup;
+
   /// Creates a [StickyGroupedListView].
   const StickyGroupedListView({
     super.key,
@@ -166,6 +177,8 @@ class StickyGroupedListView<T, E> extends StatefulWidget {
     this.initialAlignment = 0,
     this.initialScrollIndex = 0,
     this.shrinkWrap = false,
+    this.headerVisibleAtTrigger = 1,
+    this.hideGroupSeparatorHeaderForCurrentVisibleGroup = false,
   }) : assert(itemBuilder != null || indexedItemBuilder != null);
 
   @override
@@ -183,7 +196,8 @@ class StickyGroupedListViewState<T, E>
   @protected
   double? headerDimension;
 
-  final StreamController<int> _streamController = StreamController<int>();
+  final StreamController<int> _streamController =
+      StreamController<int>.broadcast();
   late ItemPositionsListener _listener;
   late GroupedItemScrollController _controller;
   GlobalKey? _groupHeaderKey;
@@ -270,8 +284,22 @@ class StickyGroupedListViewState<T, E>
               E prev = widget.groupBy(
                   sortedElements[actualIndex + (widget.reverse ? 1 : -1)]);
               if (prev != curr) {
-                return widget
-                    .groupSeparatorBuilder(sortedElements[actualIndex]);
+                final Widget groupSeparator =
+                    widget.groupSeparatorBuilder(sortedElements[actualIndex]);
+                if (widget.hideGroupSeparatorHeaderForCurrentVisibleGroup ==
+                    true) {
+                  return StreamBuilder<int>(
+                    stream: _streamController.stream,
+                    initialData: _topElementIndex,
+                    builder: (_, snapshot) {
+                      return Opacity(
+                        opacity: snapshot.data == actualIndex ? 0 : 1,
+                        child: groupSeparator,
+                      );
+                    },
+                  );
+                }
+                return groupSeparator;
               }
               return widget.separator;
             }
@@ -312,7 +340,8 @@ class StickyGroupedListViewState<T, E>
     ItemPosition currentItem = _listener.itemPositions.value
         .where((ItemPosition position) =>
             !_isSeparator!(position.index) &&
-            position.itemTrailingEdge > headerDimension!)
+            position.itemTrailingEdge >
+                (headerDimension! * widget.headerVisibleAtTrigger))
         .reduce(reducePositions);
 
     int index = currentItem.index ~/ 2;
