@@ -2,8 +2,8 @@
 
 by Alexandru-Claudiu Antonica
 
-* Support for 'headerVisibleAtTrigger' which decide how much (in percentage) from the group separator to be visible before the **fixed header** will change its value. `Default value to 1. Any integer value is permitted.`
-* Support for 'hideGroupSeparatorHeaderForCurrentVisibleGroup' which decide if the group separator will be hidden after the **fixed header** will change its value. `Default value to false. True/False value is permitted.`
+* Support for `headerVisibleAtTrigger`
+* Support for `hideGroupSeparatorHeaderForCurrentVisibleGroup`
 
 ## [3.1.0] - 07.07.2022
 

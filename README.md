@@ -19,7 +19,7 @@ A `ListView` in which list items can be grouped to sections. Based on [scrollabl
  Add the package to your pubspec.yaml:
 
  ```yaml
- sticky_grouped_list: ^3.1.0
+ sticky_grouped_list: ^3.1.1
  ```
  
  In your dart file, import the library:
@@ -86,6 +86,9 @@ The methods `scrollToElement` and `jumpToElement` can be used to jump to an elem
 | `groupComparator` | Can be used to define a custom sorting for the groups. Otherwise the natural sorting order is used | no | - |
 | `itemComparator` | Can be used to define a custom sorting for the elements inside each group. Otherwise the natural sorting order is used | no | - |
 |`reverse`| Scrolls in opposite from reading direction (Starting at bottom and scrolling up). Same as in scrollable_positioned_list. | no | false |
+|`headerVisibleAtTrigger`| Decide how much from the group separator header is visible before the **fixed header** will change its value | no | 1 |
+|`hideGroupSeparatorHeaderForCurrentVisibleGroup`| Decide if the group separator header will be hidden after the **fixed header** will change its value.  | no | false |
+
 
 *`GroupedItemScrollController.srollTo()` and `GroupedItemScrollController.jumpTo()` automatic set the `alignment` so that the item is fully visible aligned under the group header. Both methods take `automaticAlignment` as a additional optional paramenter which needs to be set to true if `alignment` is specified.*
 
